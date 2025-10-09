@@ -42,3 +42,61 @@ O objetivo é organizar, acompanhar, analisar e automatizar processos e document
 ## Como Executar Localmente
 
 1. Clone este repositório:
+
+2. Abra o arquivo `index.html` no navegador (Chrome, Firefox, Edge, etc).
+3. Explore a aplicação via menu lateral.
+
+---
+
+## Hospedagem Gratuita Recomendada
+
+Para publicar seu MVP online gratuitamente, use:
+
+- [Vercel](https://vercel.com/)
+- [Netlify](https://www.netlify.com/)
+- [GitHub Pages](https://pages.github.com/)
+
+Basta enviar o projeto para um repositório GitHub e conectar qualquer um desses serviços para deploy automático e acesso público.
+
+---
+
+## Como Contribuir
+
+Contribuições são bem-vindas! Para colaborar:
+
+1. Abra issues para bugs ou sugestões.
+2. Faça fork e crie uma branch: git checkout -b minha-feature
+3. Faça commits das alterações: git commit -m "Descrição da feature"
+git push origin minha-feature
+4. Abra um Pull Request para revisão.
+
+---
+
+## Roadmap Futuro
+
+- Integração com APIs reais do MRE para dados dinâmicos.
+- Sistema de autenticação e controle de acesso.
+- Automatização com RPA avançado.
+- Interface mobile otimizada.
+- Suporte multilíngue (inglês, espanhol, francês).
+- Armazenamento em nuvem com backups seguros.
+- Relatórios e análises customizadas.
+
+---
+
+## Contato
+
+Para dúvidas, suporte ou parcerias:
+
+- Email: suporte@diplosysgov.br  
+- Telefone: +55 (61) 1234-5678  
+- CGPI — Ministério das Relações Exteriores
+
+---
+
+## Licença
+
+Distribuído sob a licença **MIT**. Sinta-se livre para usar, modificar e distribuir este projeto.
+
+---
+
