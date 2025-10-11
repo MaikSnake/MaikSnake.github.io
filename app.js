@@ -545,6 +545,11 @@ function closeModal(modalId) {
 
 // Form Submissions
 function submitProcess() {
+  if (window.isSubmittingProcess) {
+    console.warn('SubmitProcess já em andamento, ignorando submissão duplicada.');
+    return;
+  }
+  window.isSubmittingProcess = true;
   const title = document.getElementById('process-title').value;
   const type = document.getElementById('process-type').value;
   const priority = document.getElementById('process-priority').value;
@@ -579,9 +584,16 @@ function submitProcess() {
   if (document.getElementById('dashboard').classList.contains('active')) {
     loadDashboard();
   }
+  // reset guard
+  setTimeout(() => { window.isSubmittingProcess = false; }, 1000);
 }
 
 function submitDocument() {
+  if (window.isSubmittingDocument) {
+    console.warn('SubmitDocument já em andamento, ignorando submissão duplicada.');
+    return;
+  }
+  window.isSubmittingDocument = true;
   const name = document.getElementById('document-name').value;
   const type = document.getElementById('document-type').value;
   const file = document.getElementById('document-file').files[0];
@@ -608,9 +620,15 @@ function submitDocument() {
   if (document.getElementById('documents').classList.contains('active')) {
     loadDocuments();
   }
+  setTimeout(() => { window.isSubmittingDocument = false; }, 1000);
 }
 
 function submitAutomation() {
+  if (window.isSubmittingAutomation) {
+    console.warn('SubmitAutomation já em andamento, ignorando submissão duplicada.');
+    return;
+  }
+  window.isSubmittingAutomation = true;
   const name = document.getElementById('automation-name').value;
   const type = document.getElementById('automation-type').value;
   
@@ -640,6 +658,7 @@ function submitAutomation() {
   if (document.getElementById('dashboard').classList.contains('active')) {
     loadDashboard();
   }
+  setTimeout(() => { window.isSubmittingAutomation = false; }, 1000);
 }
 
 // CRUD Operations
