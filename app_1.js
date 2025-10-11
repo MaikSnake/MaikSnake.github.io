@@ -570,6 +570,21 @@ function submitProcess() {
   appData.analytics.totalProcesses++;
   appData.analytics.pendingProcesses++;
 
+  // Log para depuração
+  console.log('Tentando salvar processo no Firestore:', newProcess);
+  if (window.db) {
+    window.db.collection('processes').add(newProcess).then(docRef => {
+      newProcess.id = docRef.id;
+      console.log('Processo salvo no Firestore com id:', docRef.id);
+      showSuccessMessage('Processo criado e salvo no Firestore!');
+    }).catch(err => {
+      console.error('Erro salvando processo no Firestore:', err);
+      showSuccessMessage('Processo criado localmente (erro no Firestore).');
+    });
+  } else {
+    console.warn('window.db não está disponível. Processo salvo apenas localmente.');
+  }
+
   // Persist to Firestore se disponível
   if (window.db) {
     window.db.collection('processes').add(newProcess).then(docRef => {
@@ -613,6 +628,19 @@ function submitDocument() {
   
   appData.documents.push(newDocument);
   
+  console.log('Tentando salvar documento no Firestore:', newDocument);
+  if (window.db) {
+    window.db.collection('documents').add(newDocument).then(docRef => {
+      newDocument.id = docRef.id;
+      console.log('Documento salvo no Firestore com id:', docRef.id);
+      showSuccessMessage('Documento adicionado e salvo no Firestore!');
+    }).catch(err => {
+      console.error('Erro salvando documento no Firestore:', err);
+      showSuccessMessage('Documento adicionado localmente (erro no Firestore).');
+    });
+  } else {
+    console.warn('window.db não está disponível. Documento salvo apenas localmente.');
+  }
   if (window.db) {
     window.db.collection('documents').add(newDocument).then(docRef => {
       newDocument.id = docRef.id;
@@ -651,15 +679,18 @@ function submitAutomation() {
   appData.automations.push(newAutomation);
   appData.analytics.activeAutomations++;
   
+  console.log('Tentando salvar automação no Firestore:', newAutomation);
   if (window.db) {
     window.db.collection('automations').add(newAutomation).then(docRef => {
       newAutomation.id = docRef.id;
+      console.log('Automação salva no Firestore com id:', docRef.id);
       showSuccessMessage('Automação criada e salva no Firestore!');
     }).catch(err => {
       console.error('Erro salvando automação no Firestore:', err);
       showSuccessMessage('Automação criada localmente (erro no Firestore).');
     });
   } else {
+    console.warn('window.db não está disponível. Automação salva apenas localmente.');
     showSuccessMessage('Automação criada com sucesso!');
   }
   closeModal('automation-modal');
@@ -865,8 +896,9 @@ function showSuccessMessage(message) {
 document.addEventListener('DOMContentLoaded', function() {
   initNavigation();
 
-  // Se Firestore estiver disponível, carregue dados do banco; caso contrário use appData em memória
+  // Log de depuração para inicialização do Firestore
   if (window.db) {
+    console.info('window.db está disponível. Firestore inicializado.');
     loadDataFromFirestore().then(() => {
       loadDashboard();
     }).catch(err => {
@@ -874,6 +906,7 @@ document.addEventListener('DOMContentLoaded', function() {
       loadDashboard();
     });
   } else {
+    console.warn('window.db NÃO está disponível. Usando dados locais.');
     loadDashboard();
   }
   
