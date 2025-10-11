@@ -569,6 +569,17 @@ function submitProcess() {
   appData.processes.push(newProcess);
   appData.analytics.totalProcesses++;
   appData.analytics.pendingProcesses++;
+
+  // Persist to Firestore se disponível
+  if (window.db) {
+    window.db.collection('processes').add(newProcess).then(docRef => {
+      newProcess.id = docRef.id;
+      showSuccessMessage('Processo criado e salvo no Firestore!');
+    }).catch(err => {
+      console.error('Erro salvando processo no Firestore:', err);
+      showSuccessMessage('Processo criado localmente (erro no Firestore).');
+    });
+  }
   
   showSuccessMessage('Processo criado com sucesso!');
   closeModal('process-modal');
@@ -602,6 +613,15 @@ function submitDocument() {
   
   appData.documents.push(newDocument);
   
+  if (window.db) {
+    window.db.collection('documents').add(newDocument).then(docRef => {
+      newDocument.id = docRef.id;
+      showSuccessMessage('Documento adicionado e salvo no Firestore!');
+    }).catch(err => {
+      console.error('Erro salvando documento no Firestore:', err);
+      showSuccessMessage('Documento adicionado localmente (erro no Firestore).');
+    });
+  }
   showSuccessMessage('Documento adicionado com sucesso!');
   closeModal('document-modal');
   
@@ -631,7 +651,17 @@ function submitAutomation() {
   appData.automations.push(newAutomation);
   appData.analytics.activeAutomations++;
   
-  showSuccessMessage('Automação criada com sucesso!');
+  if (window.db) {
+    window.db.collection('automations').add(newAutomation).then(docRef => {
+      newAutomation.id = docRef.id;
+      showSuccessMessage('Automação criada e salva no Firestore!');
+    }).catch(err => {
+      console.error('Erro salvando automação no Firestore:', err);
+      showSuccessMessage('Automação criada localmente (erro no Firestore).');
+    });
+  } else {
+    showSuccessMessage('Automação criada com sucesso!');
+  }
   closeModal('automation-modal');
   
   if (document.getElementById('automations').classList.contains('active')) {
@@ -656,7 +686,18 @@ function deleteProcess(id) {
     if (index > -1) {
       appData.processes.splice(index, 1);
       appData.analytics.totalProcesses--;
-      showSuccessMessage('Processo excluído com sucesso!');
+      // Tente remover do Firestore quando possível
+      if (window.db) {
+        // assume id pode ser Firestore doc id ou numérico local
+        window.db.collection('processes').doc(String(id)).delete().then(() => {
+          showSuccessMessage('Processo excluído com sucesso!');
+        }).catch(err => {
+          console.warn('Não foi possível excluir do Firestore (talvez id local):', err);
+          showSuccessMessage('Processo excluído localmente.');
+        });
+      } else {
+        showSuccessMessage('Processo excluído com sucesso!');
+      }
       loadProcesses();
       if (document.getElementById('dashboard').classList.contains('active')) {
         loadDashboard();
@@ -684,7 +725,16 @@ function deleteDocument(id) {
     const index = appData.documents.findIndex(d => d.id === id);
     if (index > -1) {
       appData.documents.splice(index, 1);
-      showSuccessMessage('Documento excluído com sucesso!');
+      if (window.db) {
+        window.db.collection('documents').doc(String(id)).delete().then(() => {
+          showSuccessMessage('Documento excluído do Firestore e localmente!');
+        }).catch(err => {
+          console.warn('Não foi possível excluir documento no Firestore:', err);
+          showSuccessMessage('Documento excluído localmente.');
+        });
+      } else {
+        showSuccessMessage('Documento excluído com sucesso!');
+      }
       loadDocuments();
     }
   }
@@ -733,6 +783,47 @@ function getStatusClass(status) {
   }
 }
 
+// Firestore helpers
+async function loadDataFromFirestore() {
+  if (!window.db) return;
+
+  const collections = ['processes', 'documents', 'automations', 'users'];
+
+  // Load simple collections
+  for (const col of collections) {
+    try {
+      const snapshot = await window.db.collection(col).get();
+      if (!snapshot.empty) {
+        const items = [];
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          // preserve numeric-looking fields
+          data.id = data.id || doc.id;
+          items.push(data);
+        });
+        // assign into appData
+        if (col === 'processes') appData.processes = items;
+        if (col === 'documents') appData.documents = items;
+        if (col === 'automations') appData.automations = items;
+        if (col === 'users') appData.users = items;
+      }
+    } catch (err) {
+      console.warn(`Erro carregando coleção ${col}:`, err);
+    }
+  }
+
+  // Analytics: tente ler documento único 'analytics/overview'
+  try {
+    const doc = await window.db.collection('analytics').doc('overview').get();
+    if (doc.exists) {
+      const data = doc.data();
+      appData.analytics = Object.assign({}, appData.analytics, data);
+    }
+  } catch (err) {
+    console.warn('Erro carregando analytics:', err);
+  }
+}
+
 function getPriorityClass(priority) {
   switch(priority) {
     case 'Alta': return 'high';
@@ -773,7 +864,18 @@ function showSuccessMessage(message) {
 // Initialize Application
 document.addEventListener('DOMContentLoaded', function() {
   initNavigation();
-  loadDashboard();
+
+  // Se Firestore estiver disponível, carregue dados do banco; caso contrário use appData em memória
+  if (window.db) {
+    loadDataFromFirestore().then(() => {
+      loadDashboard();
+    }).catch(err => {
+      console.error('Erro carregando dados do Firestore:', err);
+      loadDashboard();
+    });
+  } else {
+    loadDashboard();
+  }
   
   // Close dropdowns when clicking outside
   document.addEventListener('click', function(e) {
