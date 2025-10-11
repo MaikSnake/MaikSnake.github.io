@@ -308,10 +308,10 @@ function renderProcessesTable(filteredProcesses = null) {
             <td>${formatDate(process.created)}</td>
             <td>
               <div class="action-buttons">
-                <button class="btn-icon btn-icon--primary" onclick="editProcess(${process.id})" title="Editar">
+                <button class="btn-icon btn-icon--primary" onclick="editProcess('${process.id}')" title="Editar">
                   <i class="fas fa-edit"></i>
                 </button>
-                <button class="btn-icon btn-icon--danger" onclick="deleteProcess(${process.id})" title="Excluir">
+                <button class="btn-icon btn-icon--danger" onclick="deleteProcess('${process.id}')" title="Excluir">
                   <i class="fas fa-trash"></i>
                 </button>
               </div>
@@ -666,14 +666,14 @@ function deleteProcess(id) {
 }
 
 function viewDocument(id) {
-  const doc = appData.documents.find(d => d.id === id);
+  const doc = appData.documents.find(d => d.id == id);
   if (doc) {
     showSuccessMessage(`Visualizando documento: ${doc.name}`);
   }
 }
 
 function downloadDocument(id) {
-  const doc = appData.documents.find(d => d.id === id);
+  const doc = appData.documents.find(d => d.id == id);
   if (doc) {
     showSuccessMessage(`Download iniciado: ${doc.name}`);
   }
@@ -701,7 +701,7 @@ function runAutomation(id) {
 }
 
 function editAutomation(id) {
-  const automation = appData.automations.find(a => a.id === id);
+  const automation = appData.automations.find(a => a.id == id);
   if (automation) {
     showSuccessMessage(`Função de edição será implementada para: ${automation.name}`);
   }
@@ -709,7 +709,8 @@ function editAutomation(id) {
 
 function deleteAutomation(id) {
   if (confirm('Tem certeza que deseja excluir esta automação?')) {
-    const index = appData.automations.findIndex(a => a.id === id);
+    // Implementação similar a deleteProcess, se automações forem para o Firestore
+    const index = appData.automations.findIndex(a => a.id == id);
     if (index > -1) {
       appData.automations.splice(index, 1);
       appData.analytics.activeAutomations--;
