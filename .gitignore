@@ -1,0 +1,4 @@
+/.teste.txt
+node_modules/
+.env
+firebase-config.js
