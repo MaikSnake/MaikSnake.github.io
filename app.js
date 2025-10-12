@@ -557,7 +557,6 @@ function submitProcess() {
   }
   
   const newProcess = {
-    id: appData.processes.length + 1,
     title,
     type,
     status: 'Pendente',
@@ -567,18 +566,34 @@ function submitProcess() {
     updated: new Date().toISOString().split('T')[0]
   };
   
-  appData.processes.push(newProcess);
-  appData.analytics.totalProcesses++;
-  appData.analytics.pendingProcesses++;
-  
-  showSuccessMessage('Processo criado com sucesso!');
-  closeModal('process-modal');
-  
-  if (document.getElementById('processes').classList.contains('active')) {
-    loadProcesses();
-  }
-  if (document.getElementById('dashboard').classList.contains('active')) {
-    loadDashboard();
+  // Salvar no Firestore
+  if (window.db) {
+    console.log('Tentando salvar processo no Firestore:', newProcess);
+    window.db.collection('processes').add(newProcess)
+      .then(docRef => {
+        console.log('Processo salvo com ID:', docRef.id);
+        newProcess.id = docRef.id;
+        appData.processes.push(newProcess);
+        appData.analytics.totalProcesses++;
+        appData.analytics.pendingProcesses++;
+        
+        showSuccessMessage('Processo criado e salvo no Firestore!');
+        closeModal('process-modal');
+        
+        if (document.getElementById('processes').classList.contains('active')) {
+          loadProcesses();
+        }
+        if (document.getElementById('dashboard').classList.contains('active')) {
+          loadDashboard();
+        }
+      })
+      .catch(error => {
+        console.error('Erro ao salvar processo:', error);
+        alert('Erro ao salvar processo. Por favor, tente novamente.');
+      });
+  } else {
+    console.error('Firestore não está disponível');
+    alert('Erro: Banco de dados não está disponível');
   }
 }
 
