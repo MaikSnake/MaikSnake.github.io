@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - DiploSys MVP</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <h1><i class="fas fa-globe"></i> DiploSys MVP</h1>
+                <p>Acesse a plataforma de gestão diplomática</p>
+            </div>
+            <form id="login-form">
+                <div id="error-message" class="error-message hidden"></div>
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" class="form-control" placeholder="admin@mre.gov.br" required value="admin@mre.gov.br">
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Senha</label>
+                    <input type="password" id="password" class="form-control" placeholder="Sua senha" required value="admin">
+                </div>
+                <div class="form-options">
+                    <label><input type="checkbox"> Lembrar-me</label>
+                    <a href="#">Esqueceu a senha?</a>
+                </div>
+                <button type="submit" class="btn btn--primary btn--full">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="login.js"></script>
+</body>
+</html>

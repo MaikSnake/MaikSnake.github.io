@@ -142,9 +142,10 @@ function showUserSettings() {
 function logout() {
   closeAllDropdowns();
   if (confirm('Tem certeza que deseja sair do sistema?')) {
+    sessionStorage.removeItem('isLoggedIn');
     showSuccessMessage('Logout realizado com sucesso! Redirecionando...');
     setTimeout(() => {
-      alert('Você foi desconectado do DiploSys MVP');
+      window.location.href = 'login.html';
     }, 1500);
   }
 }
@@ -773,6 +774,12 @@ function showSuccessMessage(message) {
 
 // Initialize Application
 document.addEventListener('DOMContentLoaded', function() {
+  // Verifica se o usuário está logado
+  if (sessionStorage.getItem('isLoggedIn') !== 'true' && window.location.pathname.endsWith('index.html')) {
+    window.location.href = 'login.html';
+    return;
+  }
+
   initNavigation();
   loadDashboard();
   
