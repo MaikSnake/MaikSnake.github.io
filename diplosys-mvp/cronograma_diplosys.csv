@@ -1,0 +1,20 @@
+﻿Fase,Atividade,Duração (Semanas),Recursos,Entregáveis,Início (Semana),Fim (Semana),Custo Estimado (R$)
+Fase 1 - Planejamento e Design,Análise de Requisitos e Stakeholders,2,"Business Analyst, Arquiteto","Documento de Requisitos, Casos de Uso",1,2,30000
+Fase 1 - Planejamento e Design,Arquitetura do Sistema e Tecnologias,3,"Arquiteto de Software, DevOps","Arquitetura Técnica, Stack Tecnológico",3,5,45000
+Fase 1 - Planejamento e Design,Design UX/UI e Prototipação,4,"Designer UX/UI, Frontend Dev","Protótipos, Guias de Estilo",6,9,60000
+Fase 1 - Planejamento e Design,Planejamento de Segurança e Compliance,2,"Security Officer, Compliance","Plano de Segurança, Conformidades",10,11,30000
+Fase 2 - Desenvolvimento Core,Infraestrutura Cloud (AWS/GCP),4,"DevOps Engineer, Cloud Architect",Ambiente Cloud Configurado,12,15,100000
+Fase 2 - Desenvolvimento Core,API Gateway e Sistema de Autenticação,3,"Backend Developer, Security","APIs REST, Sistema de Auth",16,18,75000
+Fase 2 - Desenvolvimento Core,Banco de Dados Multi-tenant,3,"Database Admin, Backend Dev","Schema Multi-tenant, Migrations",19,21,75000
+Fase 2 - Desenvolvimento Core,Framework Web e Estrutura Base,4,Full-stack Developers,Aplicação Web Base Funcional,22,25,100000
+Fase 3 - Módulos Específicos,Módulo de Gestão de Documentos,6,Backend + Frontend Devs,"CRUD Documentos, Versionamento",26,31,180000
+Fase 3 - Módulos Específicos,Módulo de Automação de Processos,8,"RPA Specialist, Backend Dev","Workflows, RPA, Macros",32,39,240000
+Fase 3 - Módulos Específicos,Módulo de Analytics e BI,6,"Data Analyst, BI Developer","Dashboards, Relatórios, KPIs",40,45,180000
+Fase 3 - Módulos Específicos,Módulo de Suporte ao Usuário,4,"Frontend Dev, UX Designer","Help Desk, Base Conhecimento",46,49,120000
+Fase 4 - Testes e Homologação,Testes Unitários e Integração,4,"QA Engineers, Developers",Suite de Testes Automatizados,50,53,80000
+Fase 4 - Testes e Homologação,Testes de Segurança e Performance,3,"Security Tester, Performance",Relatórios de Segurança/Performance,54,56,60000
+Fase 4 - Testes e Homologação,Homologação com CGPI/MRE,2,"QA Lead, CGPI Stakeholders",Sistema Aprovado pelo CGPI,57,58,40000
+Fase 5 - Implantação e Treinamento,Deploy em Ambiente de Produção,2,"DevOps, System Admin",Sistema em Produção,59,60,36000
+Fase 5 - Implantação e Treinamento,Migração de Dados Legados,3,"Data Engineer, DBA",Dados Migrados e Validados,61,63,54000
+Fase 5 - Implantação e Treinamento,Treinamento de Usuários,2,"Trainer, Support Team",Usuários Capacitados,64,65,36000
+Fase 6 - Operação e Manutenção,Monitoramento e Suporte Contínuo,52,"Support Team, DevOps",SLA 99.9% Uptime,66,117,624000
