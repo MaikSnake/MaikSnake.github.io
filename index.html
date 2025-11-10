@@ -99,6 +99,14 @@
                     <i class="fas fa-file-alt"></i>
                     <span>Documentos</span>
                 </a>
+                <a href="#" class="sidebar-link" data-page="credenciamento">
+                    <i class="fas fa-id-badge"></i>
+                    <span>Credenciamento CRD</span>
+                </a>
+                <a href="#" class="sidebar-link" data-page="vehicles">
+                    <i class="fas fa-car"></i>
+                    <span>Veículos</span>
+                </a>
                 <a href="#" class="sidebar-link" data-page="automations">
                     <i class="fas fa-cogs"></i>
                     <span>Automações</span>
@@ -245,7 +253,474 @@
                     <!-- Will be populated by JavaScript -->
                 </div>
             </div>
+<!-- PÁGINA DE CREDENCIAMENTO - FORMULÁRIO 11 -->
+<!-- Adicione este bloco ao seu index.html junto das outras páginas -->
 
+<div id="credenciamento" class="page">
+    <div class="cred-header">
+        <h1><i class="fas fa-id-badge"></i> Renovação de CRD para Titular</h1>
+        <p class="cred-subtitle">Preenchimento de Dados Iniciais pela Embaixada</p>
+    </div>
+
+    <div class="cred-wrapper">
+        <!-- Indicador de Etapa -->
+        <div class="etapa-indicator">
+            <span class="etapa-badge active">Etapa 1: Embaixada</span>
+            <span class="etapa-text">Interface da Embaixada para preenchimento inicial</span>
+        </div>
+
+        <!-- Formulário Principal -->
+        <form id="form-credenciamento" class="cred-form">
+
+            <!-- ========================================
+                 SEÇÃO 1: NOTA VERBAL (OBRIGATÓRIO)
+                 ======================================== -->
+            <div class="form-section">
+                <h2><i class="fas fa-file-contract"></i> Nota Verbal</h2>
+                
+                <div class="form-group">
+                    <label for="nota-verbal">
+                        <i class="fas fa-file-alt"></i> Nota Verbal <span class="req-badge">Obrigatório</span>
+                    </label>
+                    <input type="text" id="nota-verbal" name="nota_verbal" required 
+                           placeholder="Ex: Nota Verbal nº 123/2025, de 15 de outubro de 2025">
+                    <small>Número e data da nota verbal oficial</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="anexo-nota">
+                        <i class="fas fa-paperclip"></i> Anexo - Nota Verbal <span class="req-badge">Obrigatório</span>
+                    </label>
+                    <div class="file-upload">
+                        <input type="file" id="anexo-nota" name="anexo_nota" required accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+                        <div class="file-upload-content">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Clique ou arraste o arquivo aqui</p>
+                            <small>PDF, JPG, PNG ou DOC (máx. 5MB)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================
+                 SEÇÃO 2: ENDEREÇO / MORA NA EMBAIXADA
+                 ======================================== -->
+            <div class="form-section">
+                <h2><i class="fas fa-home"></i> Dados de Residência</h2>
+                
+                <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="mora-embaixada" name="mora_embaixada">
+                        <span class="checkmark"></span>
+                        <span>Mora na Embaixada?</span>
+                    </label>
+                    <small>Se marcado, o endereço será extraído da nota verbal</small>
+                </div>
+
+                <div class="form-group" id="endereco-group" style="display: none;">
+                    <label for="endereco-atual">
+                        <i class="fas fa-map-marker-alt"></i> Endereço Atual <span class="req-badge">Obrigatório</span>
+                    </label>
+                    <input type="text" id="endereco-atual" name="endereco_atual" 
+                           placeholder="Ex: Avenida Paulista, 1000, apto 501, São Paulo - SP">
+                    <small>Preencha apenas se não mora na embaixada</small>
+                </div>
+            </div>
+
+            <!-- ========================================
+                 SEÇÃO 3: VISTO
+                 ======================================== -->
+            <div class="form-section">
+                <h2><i class="fas fa-passport"></i> Informações de Visto</h2>
+                
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-check-circle"></i> Status do Visto <span class="req-badge">Obrigatório</span>
+                    </label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="visto_status" value="isento" checked>
+                            <span class="radio-custom"></span>
+                            <span>Isento</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="visto_status" value="nao-isento">
+                            <span class="radio-custom"></span>
+                            <span>Não Isento</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Campos do Visto (aparecem se "Não Isento") -->
+                <div id="visto-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="tipo-visto">
+                            <i class="fas fa-user-tag"></i> Tipo do Visto <span class="req-badge">Obrigatório</span>
+                        </label>
+                        <input type="text" id="tipo-visto" name="tipo_visto" 
+                               placeholder="Ex: Visto de Trabalho, Visto Permanente">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="num-visto">
+                            <i class="fas fa-hashtag"></i> Número do Visto <span class="req-badge">Obrigatório</span>
+                        </label>
+                        <input type="text" id="num-visto" name="num_visto" 
+                               placeholder="Ex: 123456789">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="val-visto">
+                            <i class="fas fa-calendar-alt"></i> Data de Validade do Visto <span class="req-badge">Obrigatório</span>
+                        </label>
+                        <input type="date" id="val-visto" name="val_visto">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="anexo-visto">
+                            <i class="fas fa-paperclip"></i> Anexo - Cópia do Visto <span class="req-badge">Obrigatório</span>
+                        </label>
+                        <div class="file-upload">
+                            <input type="file" id="anexo-visto" name="anexo_visto" accept=".pdf,.jpg,.jpeg,.png">
+                            <div class="file-upload-content">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Clique ou arraste o arquivo aqui</p>
+                                <small>PDF, JPG ou PNG (máx. 5MB)</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================
+                 SEÇÃO 4: PASSAPORTE
+                 ======================================== -->
+            <div class="form-section">
+                <h2><i class="fas fa-book"></i> Dados do Passaporte</h2>
+                
+                <div class="form-group">
+                    <label for="tipo-passaporte">
+                        <i class="fas fa-folder-open"></i> Tipo do Passaporte <span class="req-badge">Obrigatório</span>
+                    </label>
+                    <select id="tipo-passaporte" name="tipo_passaporte" required>
+                        <option value="">-- Selecione o tipo --</option>
+                        <option value="diplomático">Diplomático</option>
+                        <option value="oficial">Oficial</option>
+                        <option value="ordinário">Ordinário</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="num-passaporte">
+                        <i class="fas fa-hashtag"></i> Número do Passaporte <span class="req-badge">Obrigatório</span>
+                    </label>
+                    <input type="text" id="num-passaporte" name="num_passaporte" required 
+                           placeholder="Ex: AB123456">
+                </div>
+
+                <div class="form-group">
+                    <label for="val-passaporte">
+                        <i class="fas fa-calendar-alt"></i> Data de Validade do Passaporte <span class="req-badge">Obrigatório</span>
+                    </label>
+                    <input type="date" id="val-passaporte" name="val_passaporte" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="anexo-passaporte">
+                        <i class="fas fa-paperclip"></i> Anexo - Cópia do Passaporte <span class="req-badge">Obrigatório</span>
+                    </label>
+                    <div class="file-upload">
+                        <input type="file" id="anexo-passaporte" name="anexo_passaporte" required accept=".pdf,.jpg,.jpeg,.png">
+                        <div class="file-upload-content">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Clique ou arraste o arquivo aqui</p>
+                            <small>PDF, JPG ou PNG (máx. 5MB)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================
+                 AÇÕES
+                 ======================================== -->
+            <div class="form-actions">
+                <button type="reset" class="btn-secondary">
+                    <i class="fas fa-redo"></i> Limpar Formulário
+                </button>
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-paper-plane"></i> Mandar para Análise
+                </button>
+            </div>
+
+            <!-- Informação importante -->
+            <div class="info-box">
+                <i class="fas fa-info-circle"></i>
+                <p><strong>Importante:</strong> Todos os campos marcados como "Obrigatório" devem ser preenchidos. O sistema validará os dados antes do envio para análise.</p>
+            </div>
+        </form>
+    </div>
+</div>
+            <!-- PÁGINA DE GESTÃO DE VEÍCULOS -->
+<div id="vehicles" class="page">
+    <div class="page-header">
+        <div>
+            <h1><i class="fas fa-car"></i> Gestão de Veículos Diplomáticos</h1>
+            <p class="page-description">Controle completo de veículos diplomáticos e consulares</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn-primary" onclick="openVehicleModal()">
+                <i class="fas fa-plus"></i> Novo Veículo
+            </button>
+            <button class="btn-secondary" onclick="exportVehiclesToCSV()">
+                <i class="fas fa-file-export"></i> Exportar CSV
+            </button>
+        </div>
+    </div>
+
+    <!-- Estatísticas -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">
+                <i class="fas fa-car"></i>
+            </div>
+            <div class="stat-info">
+                <h3 id="total-vehicles">0</h3>
+                <p>Total de Veículos</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(34, 197, 94, 0.1); color: #22c55e;">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-info">
+                <h3 id="active-vehicles">0</h3>
+                <p>Veículos Ativos</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(168, 85, 247, 0.1); color: #a855f7;">
+                <i class="fas fa-ship"></i>
+            </div>
+            <div class="stat-info">
+                <h3 id="imported-vehicles">0</h3>
+                <p>Importados</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(249, 115, 22, 0.1); color: #f97316;">
+                <i class="fas fa-flag"></i>
+            </div>
+            <div class="stat-info">
+                <h3 id="national-vehicles">0</h3>
+                <p>Nacionais</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros e Busca -->
+    <div class="filters-section">
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search-vehicles" placeholder="Buscar por nome, veículo, placa ou chassi..." onkeyup="searchVehicles()">
+        </div>
+
+        <div class="filters-row">
+            <div class="filter-group">
+                <label for="filter-pais">País:</label>
+                <input type="text" id="filter-pais" placeholder="Filtrar por país">
+            </div>
+
+            <div class="filter-group">
+                <label for="filter-status">Status:</label>
+                <select id="filter-status">
+                    <option value="">Todos</option>
+                    <option value="Ativo">Ativo</option>
+                    <option value="Em Análise">Em Análise</option>
+                    <option value="Baixado">Baixado</option>
+                    <option value="Pendente">Pendente</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="filter-origem">Origem:</label>
+                <select id="filter-origem">
+                    <option value="">Todos</option>
+                    <option value="Importado">Importado</option>
+                    <option value="Nacional">Nacional</option>
+                </select>
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn-primary btn-sm" onclick="applyVehicleFilters()">
+                    <i class="fas fa-filter"></i> Filtrar
+                </button>
+                <button class="btn-secondary btn-sm" onclick="resetVehicleFilters()">
+                    <i class="fas fa-redo"></i> Limpar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Veículos -->
+    <div id="vehicles-list" class="vehicles-grid">
+        <!-- Veículos serão renderizados aqui via JavaScript -->
+    </div>
+</div>
+
+<!-- MODAL DE ADICIONAR/EDITAR VEÍCULO -->
+<div id="vehicle-modal" class="modal hidden">
+    <div class="modal-content modal-large">
+        <div class="modal-header">
+            <h2 id="modal-title"><i class="fas fa-car"></i> Adicionar Novo Veículo</h2>
+            <button class="modal-close" onclick="closeVehicleModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <form id="vehicle-form" onsubmit="event.preventDefault(); saveVehicle();">
+            <div class="modal-body">
+                <input type="hidden" id="vehicle-id">
+
+                <div class="form-grid">
+                    <!-- País -->
+                    <div class="form-group">
+                        <label for="vehicle-pais">
+                            <i class="fas fa-flag"></i> País *
+                        </label>
+                        <input type="text" id="vehicle-pais" required placeholder="Ex: França, Alemanha, Japão">
+                    </div>
+
+                    <!-- Nome -->
+                    <div class="form-group">
+                        <label for="vehicle-nome">
+                            <i class="fas fa-user"></i> Nome do Responsável *
+                        </label>
+                        <input type="text" id="vehicle-nome" required placeholder="Ex: Embaixador João Silva">
+                    </div>
+
+                    <!-- Veículo -->
+                    <div class="form-group">
+                        <label for="vehicle-veiculo">
+                            <i class="fas fa-car"></i> Veículo *
+                        </label>
+                        <input type="text" id="vehicle-veiculo" required placeholder="Ex: Mercedes-Benz S-Class 2024">
+                    </div>
+
+                    <!-- Chassi -->
+                    <div class="form-group">
+                        <label for="vehicle-chassi">
+                            <i class="fas fa-hashtag"></i> Chassi/GED *
+                        </label>
+                        <input type="text" id="vehicle-chassi" required placeholder="Ex: WDD2220341A123456">
+                    </div>
+
+                    <!-- Placa -->
+                    <div class="form-group">
+                        <label for="vehicle-placa">
+                            <i class="fas fa-id-card"></i> Placa *
+                        </label>
+                        <input type="text" id="vehicle-placa" required placeholder="Ex: CD 0001">
+                    </div>
+
+                    <!-- Processo -->
+                    <div class="form-group">
+                        <label for="vehicle-processo">
+                            <i class="fas fa-folder-open"></i> Processo *
+                        </label>
+                        <input type="text" id="vehicle-processo" required placeholder="Ex: 2025/CGPI/VEI/0015">
+                    </div>
+
+                    <!-- Data de Entrada -->
+                    <div class="form-group">
+                        <label for="vehicle-entrada">
+                            <i class="fas fa-calendar-alt"></i> Data de Entrada *
+                        </label>
+                        <input type="date" id="vehicle-entrada" required>
+                    </div>
+
+                    <!-- Origem -->
+                    <div class="form-group">
+                        <label for="vehicle-origem">
+                            <i class="fas fa-shipping-fast"></i> Origem *
+                        </label>
+                        <select id="vehicle-origem" required>
+                            <option value="">Selecione...</option>
+                            <option value="Importado">Importado</option>
+                            <option value="Nacional">Nacional</option>
+                        </select>
+                    </div>
+
+                    <!-- Data de Saída -->
+                    <div class="form-group">
+                        <label for="vehicle-saida">
+                            <i class="fas fa-sign-out-alt"></i> Data de Saída
+                        </label>
+                        <input type="date" id="vehicle-saida">
+                    </div>
+
+                    <!-- Status -->
+                    <div class="form-group">
+                        <label for="vehicle-status">
+                            <i class="fas fa-info-circle"></i> Status *
+                        </label>
+                        <select id="vehicle-status" required>
+                            <option value="">Selecione...</option>
+                            <option value="Ativo">Ativo</option>
+                            <option value="Em Análise">Em Análise</option>
+                            <option value="Baixado">Baixado</option>
+                            <option value="Pendente">Pendente</option>
+                        </select>
+                    </div>
+
+                    <!-- GED/SEI -->
+                    <div class="form-group">
+                        <label for="vehicle-ged">
+                            <i class="fas fa-file-alt"></i> GED/SEI *
+                        </label>
+                        <input type="text" id="vehicle-ged" required placeholder="Ex: SEI-12345/2025">
+                    </div>
+
+                    <!-- E-mail Remetente -->
+                    <div class="form-group">
+                        <label for="vehicle-email">
+                            <i class="fas fa-envelope"></i> E-mail Remetente *
+                        </label>
+                        <input type="email" id="vehicle-email" required placeholder="Ex: embaixada@exemplo.com">
+                    </div>
+
+                    <!-- Observação -->
+                    <div class="form-group full-width">
+                        <label for="vehicle-observacao">
+                            <i class="fas fa-sticky-note"></i> Observação
+                        </label>
+                        <textarea id="vehicle-observacao" rows="3" placeholder="Informações adicionais sobre o veículo"></textarea>
+                    </div>
+
+                    <!-- OBS Adicional -->
+                    <div class="form-group full-width">
+                        <label for="vehicle-obs">
+                            <i class="fas fa-comment"></i> OBS Adicional
+                        </label>
+                        <textarea id="vehicle-obs" rows="3" placeholder="Observações complementares"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeVehicleModal()">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+
+                <button type="submit" class="btn-primary">
+                     <i class="fas fa-save"></i> Salvar Veículo
+                </button>
+              </div>
+        </form>
+   </div>
+ </div>
             <!-- Automations Page -->
             <div id="automations" class="page">
                 <div class="page-header">
@@ -388,7 +863,7 @@
                             <option value="Maria Silva">Maria Silva</option>
                             <option value="João Santos">João Santos</option>
                             <option value="Ana Costa">Ana Costa</option>
-                            <option value="Carlos Lima">Carlos Lima</option>
+                            <option value="Carlos Lima">Maik Lima</option>
                         </select>
                     </div>
                 </form>

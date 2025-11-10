@@ -1,5 +1,23 @@
+/**
+ * Design System CSS
+ * 
+ * Este arquivo contém o sistema de design completo com variáveis CSS,
+ * componentes base e utilitários para construção de interfaces consistentes.
+ * 
+ * Estrutura:
+ * 1. Variáveis CSS (Design Tokens)
+ * 2. Temas (Claro/Escuro)
+ * 3. Estilos Base
+ * 4. Componentes
+ * 5. Utilitários
+ */
+
+/* ==========================================================================
+   1. Variáveis CSS (Design Tokens)
+   ========================================================================== */
+
 :root {
-  /* Primitive Color Tokens */
+  /* Cores Primitivas - Palette base do sistema */
   --color-white: rgba(255, 255, 255, 1);
   --color-black: rgba(0, 0, 0, 1);
   --color-cream-50: rgba(252, 252, 249, 1);
@@ -145,6 +163,14 @@
 }
 
 /* Dark mode colors */
+/* ==========================================================================
+   2. Temas - Configurações específicas para modo claro e escuro
+   ========================================================================== */
+
+/**
+ * Modo Escuro - Detectado automaticamente pela preferência do sistema
+ * Sobrescreve as variáveis base com valores apropriados para tema escuro
+ */
 @media (prefers-color-scheme: dark) {
   :root {
     /* RGB versions for opacity control (Dark Mode) */
@@ -297,7 +323,14 @@
   --color-info-rgb: var(--color-slate-500-rgb);
 }
 
-/* Base styles */
+/* ==========================================================================
+   3. Estilos Base
+   ========================================================================== */
+
+/**
+ * Configurações fundamentais do documento
+ * Define os estilos base para HTML e elementos fundamentais
+ */
 html {
   font-size: var(--font-size-base);
   font-family: var(--font-family-base);
@@ -390,7 +423,14 @@ pre code {
   padding: 0;
 }
 
-/* Buttons */
+/* ==========================================================================
+   4. Componentes
+   ========================================================================== */
+
+/**
+ * Botões
+ * Estilos para diferentes tipos de botões e suas variações
+ */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -469,7 +509,10 @@ pre code {
   cursor: not-allowed;
 }
 
-/* Form elements */
+/**
+ * Elementos de Formulário
+ * Estilos para inputs, selects, textareas e labels
+ */
 .form-control {
   display: block;
   width: 100%;
@@ -533,7 +576,10 @@ select.form-control {
   margin-bottom: var(--space-16);
 }
 
-/* Card component */
+/**
+ * Componente Card
+ * Container para conteúdo com borda, sombra e hover effects
+ */
 .card {
   background-color: var(--color-surface);
   border-radius: var(--radius-lg);
@@ -637,7 +683,14 @@ select.form-control {
   }
 }
 
-/* Utility classes */
+/* ==========================================================================
+   5. Classes Utilitárias
+   ========================================================================== */
+
+/**
+ * Classes auxiliares para flexbox, espaçamento, display e acessibilidade
+ * Seguindo o padrão de nomenclatura similar ao Tailwind CSS
+ */
 .flex {
   display: flex;
 }
@@ -738,7 +791,14 @@ select.form-control {
 }
 
 /* END PERPLEXITY DESIGN SYSTEM */
-/* Header */
+/* ==========================================================================
+   6. Componentes Específicos
+   ========================================================================== */
+
+/**
+ * Header
+ * Barra de navegação principal fixa no topo
+ */
 .header {
   background-color: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
@@ -820,7 +880,11 @@ select.form-control {
   color: var(--color-text);
 }
 
-/* Notification System */
+/**
+ * Sistema de Notificações
+ * Componente dropdown para exibição de notificações
+ * Inclui badge de contagem e lista de notificações
+ */
 .notification-container {
   position: relative;
 }
@@ -934,7 +998,11 @@ select.form-control {
   font-size: var(--font-size-xs);
 }
 
-/* User Menu */
+/**
+ * Menu do Usuário
+ * Dropdown com opções do usuário e configurações
+ * Inclui animações e estados de hover
+ */
 .user-menu-container {
   position: relative;
 }

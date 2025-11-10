@@ -19,6 +19,113 @@ let appData = {
     {"id": 3, "name": "Notificação Email", "type": "Notificação", "runs": 67, "success": 65, "status": "Ativo"},
     {"id": 4, "name": "Backup Documentos", "type": "Backup", "runs": 12, "success": 12, "status": "Ativo"}
   ],
+  // ==========================================
+  // NOVO MÓDULO: GESTÃO DE VEÍCULOS DIPLOMÁTICOS
+  // ==========================================
+  vehicles: [
+    {
+      "id": 1,
+      "pais": "França",
+      "nome": "Embaixador Jean-Pierre Dubois",
+      "veiculo": "Mercedes-Benz S-Class 2024",
+      "chassi": "WDD2220341A123456",
+      "placa": "CD 0001",
+      "processo": "2025/CGPI/VEI/0015",
+      "entrada": "2025-01-15",
+      "origem": "Importado",
+      "observacao": "Veículo oficial do embaixador",
+      "saida": "",
+      "status": "Ativo",
+      "ged_sei": "SEI-12345/2025",
+      "email_remetente": "embaixada.franca@diplomatie.gouv.fr",
+      "obs_adicional": "Isenção fiscal aprovada"
+    },
+    {
+      "id": 2,
+      "pais": "Alemanha",
+      "nome": "Cônsul Klaus Müller",
+      "veiculo": "BMW X5 2023",
+      "chassi": "5UXCR6C09L9D12345",
+      "placa": "CD 0045",
+      "processo": "2024/CGPI/VEI/0234",
+      "entrada": "2024-11-20",
+      "origem": "Importado",
+      "observacao": "Veículo consular",
+      "saida": "",
+      "status": "Ativo",
+      "ged_sei": "GED-78901/2024",
+      "email_remetente": "konsulat.brasilien@auswaertiges-amt.de",
+      "obs_adicional": ""
+    },
+    {
+      "id": 3,
+      "pais": "Japão",
+      "nome": "Embaixada do Japão",
+      "veiculo": "Toyota Camry Hybrid 2024",
+      "chassi": "4T1G11AK5NU123456",
+      "placa": "CD 0078",
+      "processo": "2025/CGPI/VEI/0089",
+      "entrada": "2025-03-10",
+      "origem": "Nacional",
+      "observacao": "Frota administrativa",
+      "saida": "",
+      "status": "Ativo",
+      "ged_sei": "SEI-45678/2025",
+      "email_remetente": "emb.japao@mofa.go.jp",
+      "obs_adicional": "Aquisição nacional via concessionária autorizada"
+    },
+    {
+      "id": 4,
+      "pais": "Estados Unidos",
+      "nome": "Adido Militar John Smith",
+      "veiculo": "Chevrolet Suburban 2022",
+      "chassi": "1GNSKCKD8NR123456",
+      "placa": "CD 0112",
+      "processo": "2022/CGPI/VEI/0445",
+      "entrada": "2022-08-05",
+      "origem": "Importado",
+      "observacao": "Veículo blindado",
+      "saida": "2025-02-28",
+      "status": "Baixado",
+      "ged_sei": "GED-23456/2022",
+      "email_remetente": "brasilia-usembassy@state.gov",
+      "obs_adicional": "Transferido para outro país"
+    },
+    {
+      "id": 5,
+      "pais": "Itália",
+      "nome": "Secretário Cultural Giuseppe Rossi",
+      "veiculo": "Fiat Cronos 2023",
+      "chassi": "9BD362U06PB123456",
+      "placa": "CD 0156",
+      "processo": "2023/CGPI/VEI/0567",
+      "entrada": "2023-06-12",
+      "origem": "Nacional",
+      "observacao": "Veículo de uso administrativo",
+      "saida": "",
+      "status": "Ativo",
+      "ged_sei": "SEI-67890/2023",
+      "email_remetente": "segreteria.brasilia@esteri.it",
+      "obs_adicional": "Manutenção programada em outubro"
+    },
+    {
+      "id": 6,
+      "pais": "Reino Unido",
+      "nome": "Embaixador William Thompson",
+      "veiculo": "Land Rover Discovery 2024",
+      "chassi": "SALCA2BN8NH123456",
+      "placa": "CD 0203",
+      "processo": "2025/CGPI/VEI/0102",
+      "entrada": "2025-04-22",
+      "origem": "Importado",
+      "observacao": "Veículo representação",
+      "saida": "",
+      "status": "Em Análise",
+      "ged_sei": "SEI-34567/2025",
+      "email_remetente": "ukembassy.brasilia@fcdo.gov.uk",
+      "obs_adicional": "Aguardando documentação complementar"
+    }
+  ],
   analytics: {
     totalProcesses: 125,
     pendingProcesses: 23,
@@ -51,9 +158,290 @@ let appData = {
 // Charts instances
 let statusChart, monthlyChart, typeChart;
 
+// Filters state
+let vehicleFilters = {
+  pais: '',
+  status: '',
+  origem: '',
+  searchTerm: ''
+};
+
 // DOM Elements
 const sidebarLinks = document.querySelectorAll('.sidebar-link');
 const pages = document.querySelectorAll('.page');
+
+function loadVehicles() {
+  renderVehiclesList();
+  updateVehicleStats();
+}
+
+function updateVehicleStats() {
+  const total = appData.vehicles.length;
+  const ativos = appData.vehicles.filter(v => v.status === 'Ativo').length;
+  const importados = appData.vehicles.filter(v => v.origem === 'Importado').length;
+  const nacionais = appData.vehicles.filter(v => v.origem === 'Nacional').length;
+  
+  document.getElementById('total-vehicles').textContent = total;
+  document.getElementById('active-vehicles').textContent = ativos;
+  document.getElementById('imported-vehicles').textContent = importados;
+  document.getElementById('national-vehicles').textContent = nacionais;
+}
+
+function renderVehiclesList() {
+  const container = document.getElementById('vehicles-list');
+  let filtered = appData.vehicles;
+
+  // Apply filters
+  if (vehicleFilters.pais) {
+    filtered = filtered.filter(v => v.pais.toLowerCase().includes(vehicleFilters.pais.toLowerCase()));
+  }
+  if (vehicleFilters.status) {
+    filtered = filtered.filter(v => v.status === vehicleFilters.status);
+  }
+  if (vehicleFilters.origem) {
+    filtered = filtered.filter(v => v.origem === vehicleFilters.origem);
+  }
+  if (vehicleFilters.searchTerm) {
+    const term = vehicleFilters.searchTerm.toLowerCase();
+    filtered = filtered.filter(v => 
+      v.nome.toLowerCase().includes(term) ||
+      v.veiculo.toLowerCase().includes(term) ||
+      v.placa.toLowerCase().includes(term) ||
+      v.chassi.toLowerCase().includes(term)
+    );
+  }
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="no-results"><i class="fas fa-car"></i><p>Nenhum veículo encontrado</p></div>';
+    return;
+  }
+
+  container.innerHTML = filtered.map(vehicle => `
+    <div class="vehicle-card">
+      <div class="vehicle-header">
+        <div class="vehicle-title">
+          <h3><i class="fas fa-car"></i> ${vehicle.veiculo}</h3>
+          <span class="vehicle-placa">${vehicle.placa}</span>
+        </div>
+        <span class="badge status-${vehicle.status.toLowerCase().replace(' ', '-')}">${vehicle.status}</span>
+      </div>
+      <div class="vehicle-info">
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-flag"></i> País:</span>
+          <span class="info-value">${vehicle.pais}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-user"></i> Nome:</span>
+          <span class="info-value">${vehicle.nome}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-hashtag"></i> Chassi:</span>
+          <span class="info-value">${vehicle.chassi}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-folder-open"></i> Processo:</span>
+          <span class="info-value">${vehicle.processo}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-calendar-alt"></i> Entrada:</span>
+          <span class="info-value">${formatDate(vehicle.entrada)}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-shipping-fast"></i> Origem:</span>
+          <span class="info-value"><span class="badge badge-${vehicle.origem.toLowerCase()}">${vehicle.origem}</span></span>
+        </div>
+        ${vehicle.saida ? `
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-sign-out-alt"></i> Saída:</span>
+          <span class="info-value">${formatDate(vehicle.saida)}</span>
+        </div>
+        ` : ''}
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-file-alt"></i> GED/SEI:</span>
+          <span class="info-value">${vehicle.ged_sei}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-envelope"></i> E-mail:</span>
+          <span class="info-value">${vehicle.email_remetente}</span>
+        </div>
+        ${vehicle.observacao ? `
+        <div class="info-row full-width">
+          <span class="info-label"><i class="fas fa-sticky-note"></i> Observação:</span>
+          <span class="info-value">${vehicle.observacao}</span>
+        </div>
+        ` : ''}
+        ${vehicle.obs_adicional ? `
+        <div class="info-row full-width">
+          <span class="info-label"><i class="fas fa-comment"></i> OBS Adicional:</span>
+          <span class="info-value">${vehicle.obs_adicional}</span>
+        </div>
+        ` : ''}
+      </div>
+      <div class="vehicle-actions">
+        <button class="btn-secondary btn-sm" onclick="viewVehicleDetails(${vehicle.id})">
+          <i class="fas fa-eye"></i> Detalhes
+        </button>
+        <button class="btn-secondary btn-sm" onclick="editVehicle(${vehicle.id})">
+          <i class="fas fa-edit"></i> Editar
+        </button>
+        <button class="btn-danger btn-sm" onclick="deleteVehicle(${vehicle.id})">
+          <i class="fas fa-trash"></i> Excluir
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function applyVehicleFilters() {
+  vehicleFilters.pais = document.getElementById('filter-pais').value;
+  vehicleFilters.status = document.getElementById('filter-status').value;
+  vehicleFilters.origem = document.getElementById('filter-origem').value;
+  renderVehiclesList();
+}
+
+function searchVehicles() {
+  vehicleFilters.searchTerm = document.getElementById('search-vehicles').value;
+  renderVehiclesList();
+}
+
+function resetVehicleFilters() {
+  vehicleFilters = { pais: '', status: '', origem: '', searchTerm: '' };
+  document.getElementById('filter-pais').value = '';
+  document.getElementById('filter-status').value = '';
+  document.getElementById('filter-origem').value = '';
+  document.getElementById('search-vehicles').value = '';
+  renderVehiclesList();
+}
+
+function openVehicleModal() {
+  document.getElementById('vehicle-modal').classList.add('active');
+  document.getElementById('vehicle-form').reset();
+  document.getElementById('vehicle-id').value = '';
+  document.getElementById('modal-title').textContent = 'Adicionar Novo Veículo';
+}
+
+function closeVehicleModal() {
+  document.getElementById('vehicle-modal').classList.remove('active');
+}
+
+function saveVehicle() {
+  const id = document.getElementById('vehicle-id').value;
+  const vehicleData = {
+    pais: document.getElementById('vehicle-pais').value,
+    nome: document.getElementById('vehicle-nome').value,
+    veiculo: document.getElementById('vehicle-veiculo').value,
+    chassi: document.getElementById('vehicle-chassi').value,
+    placa: document.getElementById('vehicle-placa').value,
+    processo: document.getElementById('vehicle-processo').value,
+    entrada: document.getElementById('vehicle-entrada').value,
+    origem: document.getElementById('vehicle-origem').value,
+    observacao: document.getElementById('vehicle-observacao').value,
+    saida: document.getElementById('vehicle-saida').value,
+    status: document.getElementById('vehicle-status').value,
+    ged_sei: document.getElementById('vehicle-ged').value,
+    email_remetente: document.getElementById('vehicle-email').value,
+    obs_adicional: document.getElementById('vehicle-obs').value
+  };
+
+  if (id) {
+    // Update existing
+    const index = appData.vehicles.findIndex(v => v.id === parseInt(id));
+    appData.vehicles[index] = { ...appData.vehicles[index], ...vehicleData };
+    showSuccessMessage('Veículo atualizado com sucesso!');
+  } else {
+    // Add new
+    const newId = Math.max(...appData.vehicles.map(v => v.id)) + 1;
+    appData.vehicles.push({ id: newId, ...vehicleData });
+    showSuccessMessage('Veículo adicionado com sucesso!');
+  }
+
+  closeVehicleModal();
+  loadVehicles();
+}
+
+function editVehicle(id) {
+  const vehicle = appData.vehicles.find(v => v.id === id);
+  if (!vehicle) return;
+
+  document.getElementById('vehicle-id').value = vehicle.id;
+  document.getElementById('vehicle-pais').value = vehicle.pais;
+  document.getElementById('vehicle-nome').value = vehicle.nome;
+  document.getElementById('vehicle-veiculo').value = vehicle.veiculo;
+  document.getElementById('vehicle-chassi').value = vehicle.chassi;
+  document.getElementById('vehicle-placa').value = vehicle.placa;
+  document.getElementById('vehicle-processo').value = vehicle.processo;
+  document.getElementById('vehicle-entrada').value = vehicle.entrada;
+  document.getElementById('vehicle-origem').value = vehicle.origem;
+  document.getElementById('vehicle-observacao').value = vehicle.observacao;
+  document.getElementById('vehicle-saida').value = vehicle.saida;
+  document.getElementById('vehicle-status').value = vehicle.status;
+  document.getElementById('vehicle-ged').value = vehicle.ged_sei;
+  document.getElementById('vehicle-email').value = vehicle.email_remetente;
+  document.getElementById('vehicle-obs').value = vehicle.obs_adicional;
+
+  document.getElementById('modal-title').textContent = 'Editar Veículo';
+  document.getElementById('vehicle-modal').classList.add('active');
+}
+
+function viewVehicleDetails(id) {
+  const vehicle = appData.vehicles.find(v => v.id === id);
+  if (!vehicle) return;
+
+  const detailsHTML = `
+    <div class="vehicle-details-modal">
+      <h2><i class="fas fa-car"></i> ${vehicle.veiculo}</h2>
+      <div class="details-grid">
+        <div class="detail-item"><strong>País:</strong> ${vehicle.pais}</div>
+        <div class="detail-item"><strong>Nome:</strong> ${vehicle.nome}</div>
+        <div class="detail-item"><strong>Placa:</strong> ${vehicle.placa}</div>
+        <div class="detail-item"><strong>Chassi:</strong> ${vehicle.chassi}</div>
+        <div class="detail-item"><strong>Processo:</strong> ${vehicle.processo}</div>
+        <div class="detail-item"><strong>Entrada:</strong> ${formatDate(vehicle.entrada)}</div>
+        <div class="detail-item"><strong>Origem:</strong> ${vehicle.origem}</div>
+        <div class="detail-item"><strong>Status:</strong> <span class="badge status-${vehicle.status.toLowerCase()}">${vehicle.status}</span></div>
+        ${vehicle.saida ? `<div class="detail-item"><strong>Saída:</strong> ${formatDate(vehicle.saida)}</div>` : ''}
+        <div class="detail-item"><strong>GED/SEI:</strong> ${vehicle.ged_sei}</div>
+        <div class="detail-item full-width"><strong>E-mail:</strong> ${vehicle.email_remetente}</div>
+        ${vehicle.observacao ? `<div class="detail-item full-width"><strong>Observação:</strong> ${vehicle.observacao}</div>` : ''}
+        ${vehicle.obs_adicional ? `<div class="detail-item full-width"><strong>OBS Adicional:</strong> ${vehicle.obs_adicional}</div>` : ''}
+      </div>
+    </div>
+  `;
+
+  showModal('Detalhes do Veículo', detailsHTML);
+}
+
+function deleteVehicle(id) {
+  if (confirm('Tem certeza que deseja excluir este veículo?')) {
+    appData.vehicles = appData.vehicles.filter(v => v.id !== id);
+    showSuccessMessage('Veículo excluído com sucesso!');
+    loadVehicles();
+  }
+}
+
+function exportVehiclesToCSV() {
+  const headers = ['País', 'Nome', 'Veículo', 'Chassi', 'Placa', 'Processo', 'Entrada', 'Origem', 'Observação', 'Saída', 'Status', 'GED/SEI', 'E-mail', 'OBS'];
+  const rows = appData.vehicles.map(v => [
+    v.pais, v.nome, v.veiculo, v.chassi, v.placa, v.processo,
+    v.entrada, v.origem, v.observacao, v.saida, v.status,
+    v.ged_sei, v.email_remetente, v.obs_adicional
+  ]);
+
+  let csvContent = headers.join(',') + '\\n';
+  rows.forEach(row => {
+    csvContent += row.map(cell => `"${cell}"`).join(',') + '\\n';
+  });
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'veiculos_diplomaticos_' + new Date().toISOString().split('T')[0] + '.csv';
+  link.click();
+
+  showSuccessMessage('Exportação realizada com sucesso!');
+}
+
+
 
 // Header Functions
 function toggleSidebar() {
@@ -142,10 +530,9 @@ function showUserSettings() {
 function logout() {
   closeAllDropdowns();
   if (confirm('Tem certeza que deseja sair do sistema?')) {
-    sessionStorage.removeItem('isLoggedIn');
     showSuccessMessage('Logout realizado com sucesso! Redirecionando...');
     setTimeout(() => {
-      window.location.href = 'login.html';
+      alert('Você foi desconectado do DiploSys MVP');
     }, 1500);
   }
 }
@@ -180,29 +567,48 @@ function initNavigation() {
 }
 
 function showPage(pageId) {
-  pages.forEach(page => page.classList.remove('active'));
-  document.getElementById(pageId).classList.add('active');
+  // Verificar se a coleção pages existe
+  if (typeof pages !== 'undefined') {
+    pages.forEach(page => page.classList.remove('active'));
+  }
+
+  // Verificar se o elemento existe antes de tentar acessá-lo
+  const targetPage = document.getElementById(pageId);
+  if (!targetPage) {
+    console.warn(`Página ${pageId} não encontrada`);
+    return;
+  }
+
+  targetPage.classList.add('active');
   
-  // Load page-specific content
+  // Verificar se as funções existem antes de chamá-las
   switch(pageId) {
     case 'dashboard':
-      loadDashboard();
+      if (typeof loadDashboard === 'function') loadDashboard();
       break;
     case 'processes':
-      loadProcesses();
+      if (typeof loadProcesses === 'function') loadProcesses();
       break;
     case 'documents':
-      loadDocuments();
+      if (typeof loadDocuments === 'function') loadDocuments();
+      break;
+    case 'credenciamento':
+      if (typeof loadCredenciamento === 'function') loadCredenciamento();
+      break;
+    case 'vehicles': 
+      if (typeof loadVehicles === 'function') loadVehicles();
       break;
     case 'automations':
-      loadAutomations();
+      if (typeof loadAutomations === 'function') loadAutomations();
       break;
     case 'analytics':
-      loadAnalytics();
+      if (typeof loadAnalytics === 'function') loadAnalytics();
       break;
     case 'settings':
-      loadSettings();
+      if (typeof loadSettings === 'function') loadSettings();
       break;
+    default:
+      console.warn(`Página ${pageId} não tem função de carregamento definida`);
   }
 }
 
@@ -309,10 +715,10 @@ function renderProcessesTable(filteredProcesses = null) {
             <td>${formatDate(process.created)}</td>
             <td>
               <div class="action-buttons">
-                <button class="btn-icon btn-icon--primary" onclick="editProcess('${process.id}')" title="Editar">
+                <button class="btn-icon btn-icon--primary" onclick="editProcess(${process.id})" title="Editar">
                   <i class="fas fa-edit"></i>
                 </button>
-                <button class="btn-icon btn-icon--danger" onclick="deleteProcess('${process.id}')" title="Excluir">
+                <button class="btn-icon btn-icon--danger" onclick="deleteProcess(${process.id})" title="Excluir">
                   <i class="fas fa-trash"></i>
                 </button>
               </div>
@@ -557,6 +963,7 @@ function submitProcess() {
   }
   
   const newProcess = {
+    id: appData.processes.length + 1,
     title,
     type,
     status: 'Pendente',
@@ -566,34 +973,18 @@ function submitProcess() {
     updated: new Date().toISOString().split('T')[0]
   };
   
-  // Salvar no Firestore
-  if (window.db) {
-    console.log('Tentando salvar processo no Firestore:', newProcess);
-    window.db.collection('processes').add(newProcess)
-      .then(docRef => {
-        console.log('Processo salvo com ID:', docRef.id);
-        newProcess.id = docRef.id;
-        appData.processes.push(newProcess);
-        appData.analytics.totalProcesses++;
-        appData.analytics.pendingProcesses++;
-        
-        showSuccessMessage('Processo criado e salvo no Firestore!');
-        closeModal('process-modal');
-        
-        if (document.getElementById('processes').classList.contains('active')) {
-          loadProcesses();
-        }
-        if (document.getElementById('dashboard').classList.contains('active')) {
-          loadDashboard();
-        }
-      })
-      .catch(error => {
-        console.error('Erro ao salvar processo:', error);
-        alert('Erro ao salvar processo. Por favor, tente novamente.');
-      });
-  } else {
-    console.error('Firestore não está disponível');
-    alert('Erro: Banco de dados não está disponível');
+  appData.processes.push(newProcess);
+  appData.analytics.totalProcesses++;
+  appData.analytics.pendingProcesses++;
+  
+  showSuccessMessage('Processo criado com sucesso!');
+  closeModal('process-modal');
+  
+  if (document.getElementById('processes').classList.contains('active')) {
+    loadProcesses();
+  }
+  if (document.getElementById('dashboard').classList.contains('active')) {
+    loadDashboard();
   }
 }
 
@@ -682,14 +1073,14 @@ function deleteProcess(id) {
 }
 
 function viewDocument(id) {
-  const doc = appData.documents.find(d => d.id == id);
+  const doc = appData.documents.find(d => d.id === id);
   if (doc) {
     showSuccessMessage(`Visualizando documento: ${doc.name}`);
   }
 }
 
 function downloadDocument(id) {
-  const doc = appData.documents.find(d => d.id == id);
+  const doc = appData.documents.find(d => d.id === id);
   if (doc) {
     showSuccessMessage(`Download iniciado: ${doc.name}`);
   }
@@ -717,7 +1108,7 @@ function runAutomation(id) {
 }
 
 function editAutomation(id) {
-  const automation = appData.automations.find(a => a.id == id);
+  const automation = appData.automations.find(a => a.id === id);
   if (automation) {
     showSuccessMessage(`Função de edição será implementada para: ${automation.name}`);
   }
@@ -725,8 +1116,7 @@ function editAutomation(id) {
 
 function deleteAutomation(id) {
   if (confirm('Tem certeza que deseja excluir esta automação?')) {
-    // Implementação similar a deleteProcess, se automações forem para o Firestore
-    const index = appData.automations.findIndex(a => a.id == id);
+    const index = appData.automations.findIndex(a => a.id === id);
     if (index > -1) {
       appData.automations.splice(index, 1);
       appData.analytics.activeAutomations--;
@@ -789,12 +1179,6 @@ function showSuccessMessage(message) {
 
 // Initialize Application
 document.addEventListener('DOMContentLoaded', function() {
-  // Verifica se o usuário está logado
-  if (sessionStorage.getItem('isLoggedIn') !== 'true' && window.location.pathname.endsWith('index.html')) {
-    window.location.href = 'login.html';
-    return;
-  }
-
   initNavigation();
   loadDashboard();
   
