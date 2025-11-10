@@ -1,4 +1,6 @@
-// Application Data - Initial data from JSON
+// ==========================================
+// CONFIGURAÇÃO INICIAL E DADOS
+// ==========================================
 let appData = {
   processes: [
     {"id": 1, "title": "Carteira Diplomática - Embaixador França", "type": "Carteira Diplomática", "status": "Em Andamento", "priority": "Alta", "assignee": "Maria Silva", "created": "2025-10-01", "updated": "2025-10-07"},
@@ -155,7 +157,9 @@ let appData = {
   ]
 };
 
-// Charts instances
+// ==========================================
+// VARIÁVEIS GLOBAIS
+// ==========================================
 let statusChart, monthlyChart, typeChart;
 
 // Filters state
@@ -166,7 +170,9 @@ let vehicleFilters = {
   searchTerm: ''
 };
 
-// DOM Elements
+// ==========================================
+// ELEMENTOS DO DOM
+// ==========================================
 const sidebarLinks = document.querySelectorAll('.sidebar-link');
 const pages = document.querySelectorAll('.page');
 
@@ -314,17 +320,17 @@ function resetVehicleFilters() {
 }
 
 function openVehicleModal() {
-  document.getElementById('vehicle-modal').classList.add('active');
+  document.getElementById('vehicle-modal').classList.remove('hidden'); // 
   document.getElementById('vehicle-form').reset();
   document.getElementById('vehicle-id').value = '';
   document.getElementById('modal-title').textContent = 'Adicionar Novo Veículo';
 }
 
 function closeVehicleModal() {
-  document.getElementById('vehicle-modal').classList.remove('active');
+  document.getElementById('vehicle-modal').classList.add('hidden'); // Correto
 }
 
-function saveVehicle() {
+function saveVehicle() { 
   const id = document.getElementById('vehicle-id').value;
   const vehicleData = {
     pais: document.getElementById('vehicle-pais').value,
@@ -342,7 +348,7 @@ function saveVehicle() {
     email_remetente: document.getElementById('vehicle-email').value,
     obs_adicional: document.getElementById('vehicle-obs').value
   };
-
+    
   if (id) {
     // Update existing
     const index = appData.vehicles.findIndex(v => v.id === parseInt(id));
@@ -359,89 +365,99 @@ function saveVehicle() {
   loadVehicles();
 }
 
-function editVehicle(id) {
-  const vehicle = appData.vehicles.find(v => v.id === id);
-  if (!vehicle) return;
+// Funções para gerenciamento de veículos
+function viewVehicleDetails(id) {
+    const vehicle = appData.vehicles.find(v => v.id === id);
+    if (!vehicle) return;
 
-  document.getElementById('vehicle-id').value = vehicle.id;
-  document.getElementById('vehicle-pais').value = vehicle.pais;
-  document.getElementById('vehicle-nome').value = vehicle.nome;
-  document.getElementById('vehicle-veiculo').value = vehicle.veiculo;
-  document.getElementById('vehicle-chassi').value = vehicle.chassi;
-  document.getElementById('vehicle-placa').value = vehicle.placa;
-  document.getElementById('vehicle-processo').value = vehicle.processo;
-  document.getElementById('vehicle-entrada').value = vehicle.entrada;
-  document.getElementById('vehicle-origem').value = vehicle.origem;
-  document.getElementById('vehicle-observacao').value = vehicle.observacao;
-  document.getElementById('vehicle-saida').value = vehicle.saida;
-  document.getElementById('vehicle-status').value = vehicle.status;
-  document.getElementById('vehicle-ged').value = vehicle.ged_sei;
-  document.getElementById('vehicle-email').value = vehicle.email_remetente;
-  document.getElementById('vehicle-obs').value = vehicle.obs_adicional;
+    const detailsHTML = `
+        <div class="vehicle-details">
+            <h3>${vehicle.veiculo}</h3>
+            <div class="details-grid">
+                <div><strong>País:</strong> ${vehicle.pais}</div>
+                <div><strong>Nome:</strong> ${vehicle.nome}</div>
+                <div><strong>Chassi:</strong> ${vehicle.chassi}</div>
+                <div><strong>Placa:</strong> ${vehicle.placa}</div>
+                <div><strong>Processo:</strong> ${vehicle.processo}</div>
+                <div><strong>Status:</strong> ${vehicle.status}</div>
+                <div><strong>Entrada:</strong> ${formatDate(vehicle.entrada)}</div>
+                <div><strong>Origem:</strong> ${vehicle.origem}</div>
+                ${vehicle.saida ? `<div><strong>Saída:</strong> ${formatDate(vehicle.saida)}</div>` : ''}
+                <div><strong>GED/SEI:</strong> ${vehicle.ged_sei}</div>
+                <div><strong>Email:</strong> ${vehicle.email_remetente}</div>
+                ${vehicle.observacao ? `<div><strong>Observação:</strong> ${vehicle.observacao}</div>` : ''}
+                ${vehicle.obs_adicional ? `<div><strong>Obs Adicional:</strong> ${vehicle.obs_adicional}</div>` : ''}
+            </div>
+        </div>
+    `;
 
-  document.getElementById('modal-title').textContent = 'Editar Veículo';
-  document.getElementById('vehicle-modal').classList.add('active');
+    showModal('Detalhes do Veículo', detailsHTML);
 }
 
-function viewVehicleDetails(id) {
-  const vehicle = appData.vehicles.find(v => v.id === id);
-  if (!vehicle) return;
+function editVehicle(id) {
+    const vehicle = appData.vehicles.find(v => v.id === id);
+    if (!vehicle) return;
 
-  const detailsHTML = `
-    <div class="vehicle-details-modal">
-      <h2><i class="fas fa-car"></i> ${vehicle.veiculo}</h2>
-      <div class="details-grid">
-        <div class="detail-item"><strong>País:</strong> ${vehicle.pais}</div>
-        <div class="detail-item"><strong>Nome:</strong> ${vehicle.nome}</div>
-        <div class="detail-item"><strong>Placa:</strong> ${vehicle.placa}</div>
-        <div class="detail-item"><strong>Chassi:</strong> ${vehicle.chassi}</div>
-        <div class="detail-item"><strong>Processo:</strong> ${vehicle.processo}</div>
-        <div class="detail-item"><strong>Entrada:</strong> ${formatDate(vehicle.entrada)}</div>
-        <div class="detail-item"><strong>Origem:</strong> ${vehicle.origem}</div>
-        <div class="detail-item"><strong>Status:</strong> <span class="badge status-${vehicle.status.toLowerCase()}">${vehicle.status}</span></div>
-        ${vehicle.saida ? `<div class="detail-item"><strong>Saída:</strong> ${formatDate(vehicle.saida)}</div>` : ''}
-        <div class="detail-item"><strong>GED/SEI:</strong> ${vehicle.ged_sei}</div>
-        <div class="detail-item full-width"><strong>E-mail:</strong> ${vehicle.email_remetente}</div>
-        ${vehicle.observacao ? `<div class="detail-item full-width"><strong>Observação:</strong> ${vehicle.observacao}</div>` : ''}
-        ${vehicle.obs_adicional ? `<div class="detail-item full-width"><strong>OBS Adicional:</strong> ${vehicle.obs_adicional}</div>` : ''}
-      </div>
-    </div>
-  `;
+    // Preenche o formulário com os dados do veículo
+    document.getElementById('vehicle-id').value = vehicle.id;
+    document.getElementById('vehicle-pais').value = vehicle.pais;
+    document.getElementById('vehicle-nome').value = vehicle.nome;
+    document.getElementById('vehicle-veiculo').value = vehicle.veiculo;
+    document.getElementById('vehicle-chassi').value = vehicle.chassi;
+    document.getElementById('vehicle-placa').value = vehicle.placa;
+    document.getElementById('vehicle-processo').value = vehicle.processo;
+    document.getElementById('vehicle-entrada').value = vehicle.entrada;
+    document.getElementById('vehicle-origem').value = vehicle.origem;
+    document.getElementById('vehicle-status').value = vehicle.status;
+    document.getElementById('vehicle-observacao').value = vehicle.observacao || '';
+    document.getElementById('vehicle-saida').value = vehicle.saida || '';
+    document.getElementById('vehicle-ged').value = vehicle.ged_sei;
+    document.getElementById('vehicle-email').value = vehicle.email_remetente;
+    document.getElementById('vehicle-obs').value = vehicle.obs_adicional || '';
 
-  showModal('Detalhes do Veículo', detailsHTML);
+    // Abre o modal
+    document.getElementById('vehicle-modal').classList.remove('hidden');
 }
 
 function deleteVehicle(id) {
-  if (confirm('Tem certeza que deseja excluir este veículo?')) {
-    appData.vehicles = appData.vehicles.filter(v => v.id !== id);
-    showSuccessMessage('Veículo excluído com sucesso!');
-    loadVehicles();
-  }
+    if (confirm('Tem certeza que deseja excluir este veículo?')) {
+        const index = appData.vehicles.findIndex(v => v.id === id);
+        if (index > -1) {
+            appData.vehicles.splice(index, 1);
+            showSuccessMessage('Veículo excluído com sucesso!');
+            loadVehicles(); // Recarrega a lista de veículos
+        }
+    }
 }
 
-function exportVehiclesToCSV() {
-  const headers = ['País', 'Nome', 'Veículo', 'Chassi', 'Placa', 'Processo', 'Entrada', 'Origem', 'Observação', 'Saída', 'Status', 'GED/SEI', 'E-mail', 'OBS'];
-  const rows = appData.vehicles.map(v => [
-    v.pais, v.nome, v.veiculo, v.chassi, v.placa, v.processo,
-    v.entrada, v.origem, v.observacao, v.saida, v.status,
-    v.ged_sei, v.email_remetente, v.obs_adicional
-  ]);
+// Função auxiliar para mostrar modal
+function showModal(title, content) {
+    const modalHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>${title}</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                ${content}
+            </div>
+        </div>
+    `;
 
-  let csvContent = headers.join(',') + '\\n';
-  rows.forEach(row => {
-    csvContent += row.map(cell => `"${cell}"`).join(',') + '\\n';
-  });
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = modalHTML;
 
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = 'veiculos_diplomaticos_' + new Date().toISOString().split('T')[0] + '.csv';
-  link.click();
+    // Adiciona o modal ao DOM
+    document.body.appendChild(modal);
 
-  showSuccessMessage('Exportação realizada com sucesso!');
+    // Configura o fechamento do modal
+    const closeBtn = modal.querySelector('.close-modal');
+    closeBtn.onclick = () => modal.remove();
+    modal.onclick = (e) => {
+        if (e.target === modal) modal.remove();
+    };
 }
-
-
 
 // Header Functions
 function toggleSidebar() {
